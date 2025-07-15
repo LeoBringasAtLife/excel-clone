@@ -1,64 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clon de Excel</title>
     <style>
         body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-family: system-ui, sans-serif;
         }
-
+        *, *::before, *::after {
+        box-sizing: border-box;
+        }
         img {
         max-width: 30px;
         height: auto;
         }
-
+        table {
+        border-collapse: collapse;
+        }
+        th, td {
+        border: 1px solid #ccc;
+        padding: 5px;
+        text-align: center;
+        font-weight: normal;
+        font-size: 12px;
+        position: relative;
+        }
+        thead, tr td:first-child {
+        background: #eee;
+        }
+        tr td:first-child,
+        tr th:first-child {
+        width: 40px;
+        }
+        span, input {
+        position: absolute;
+        inset: 0;
+        vertical-align: middle;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        input {
+        width: 100%;
+        border: none;
+        outline: none;
+        text-align: center;
+        }
     </style>
 
-        <script type="module">
+    <script type="module">
         const $ = el => document.querySelector(el)
-        const $$ = el => document.querySelectorAll(el)
+        const $$ = el => document.querySelector(el)
+
+        const $table = $('table')
+        const $thead = $('thead')
+        const $tbody = $('tbody')
 
         const ROWS = 10
-        const COLUMNS = 3
+        const COLUMNS = 5
+        const FIRST_CHAR_CODE = 65
 
         const range = length => Array.from({ length }, (_, i) => i)
+        const getColumn = i => String.fromCharCode(FIRST_CHAR_CODE + i)
+
+        let STATE = range(COLUMNS).map(column =>
+        range(ROWS).map(row => ({
+            value: '',
+            computedValue: row + column
+        }))
+        )
 
         const renderSpreadSheet = () => {
-        const $head = $('thead')
-        const $body = $('tbody')
+        const $head = document.querySelector('thead')
+        const $body = document.querySelector('tbody')
 
         const headerHTML = `
             <tr>
             <th></th>
-            ${range(COLUMNS).map(i => `<th>${String.fromCharCode(65 + i)}</th>`).join('')}
+            ${range(COLUMNS).map(i => `<th>${getColumn(i)}</th>`).join('')}
             </tr>
         `
+        $head.innerHTML = headerHTML
 
         const bodyHTML = range(ROWS).map(row => `
             <tr>
-            <th>${row + 1}</th>
-            ${range(COLUMNS).map(() => `<td contenteditable="true"></td>`).join('')}
+            <td>${row + 1}</td>
+            ${range(COLUMNS).map(column => `
+                <td data-x="${column}" data-y="${row}">
+                <span>${STATE[column][row].computedValue}</span>
+                <input type="text" value="${STATE[column][row].value}" />
+                </td>
+            `).join('')}
             </tr>
         `).join('')
 
-        $head.innerHTML = headerHTML
         $body.innerHTML = bodyHTML
         }
 
+        $body.addEventListener('click', event => {
+            const td = event.target .closeset('td')
+            if (!td) return
+
+            const { x, y } = td.dataset
+            const input = td.querySelector('input')
+            const span = td.querySelector('span')
+
+            const end = input.value.length
+            input.setSelectionRange(end, end)
+            input.focus() 
+
+            input.add addEventListener('blur', ( =>
+                
+            ))
+        })
+
+        
+
         renderSpreadSheet()
     </script>
-
 </head>
 <body>
-
     <img src="https://imgs.search.brave.com/Vnfvrzbp4pv9IjAcoM4selFpzkttBCbInakUYV3rRc8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy83/LzczL01pY3Jvc29m/dF9FeGNlbF8yMDEz/LTIwMTlfbG9nby5z/dmc" alt="Logo de Excel">
 
     <table>
         <thead></thead>
         <tbody></tbody>
     </table>
-
 </body>
 </html>
