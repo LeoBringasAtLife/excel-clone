@@ -1,131 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clon de Excel</title>
-    <style>
-        body {
-        font-family: system-ui, sans-serif;
-        }
-        *, *::before, *::after {
-        box-sizing: border-box;
-        }
-        img {
-        max-width: 30px;
-        height: auto;
-        }
-        table {
-        border-collapse: collapse;
-        }
-        th, td {
-        border: 1px solid #ccc;
-        padding: 5px;
-        text-align: center;
-        font-weight: normal;
-        font-size: 12px;
-        position: relative;
-        }
-        thead, tr td:first-child {
-        background: #eee;
-        }
-        tr td:first-child,
-        tr th:first-child {
-        width: 40px;
-        }
-        span, input {
-        position: absolute;
-        inset: 0;
-        vertical-align: middle;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        }
-        input {
-        width: 100%;
-        border: none;
-        outline: none;
-        text-align: center;
-        }
-    </style>
-
-    <script type="module">
-        const $ = el => document.querySelector(el)
-        const $$ = el => document.querySelector(el)
-
-        const $table = $('table')
-        const $thead = $('thead')
-        const $tbody = $('tbody')
-
-        const ROWS = 10
-        const COLUMNS = 5
-        const FIRST_CHAR_CODE = 65
-
-        const range = length => Array.from({ length }, (_, i) => i)
-        const getColumn = i => String.fromCharCode(FIRST_CHAR_CODE + i)
-
-        let STATE = range(COLUMNS).map(column =>
-        range(ROWS).map(row => ({
-            value: '',
-            computedValue: row + column
-        }))
-        )
-
-        const renderSpreadSheet = () => {
-        const $head = document.querySelector('thead')
-        const $body = document.querySelector('tbody')
-
-        const headerHTML = `
-            <tr>
-            <th></th>
-            ${range(COLUMNS).map(i => `<th>${getColumn(i)}</th>`).join('')}
-            </tr>
-        `
-        $head.innerHTML = headerHTML
-
-        const bodyHTML = range(ROWS).map(row => `
-            <tr>
-            <td>${row + 1}</td>
-            ${range(COLUMNS).map(column => `
-                <td data-x="${column}" data-y="${row}">
-                <span>${STATE[column][row].computedValue}</span>
-                <input type="text" value="${STATE[column][row].value}" />
-                </td>
-            `).join('')}
-            </tr>
-        `).join('')
-
-        $body.innerHTML = bodyHTML
-        }
-
-        $body.addEventListener('click', event => {
-            const td = event.target .closeset('td')
-            if (!td) return
-
-            const { x, y } = td.dataset
-            const input = td.querySelector('input')
-            const span = td.querySelector('span')
-
-            const end = input.value.length
-            input.setSelectionRange(end, end)
-            input.focus() 
-
-            input.add addEventListener('blur', ( =>
-                
-            ))
-        })
-
-        
-
-        renderSpreadSheet()
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>excel-clone</title>
+  <style>
+    body { font-family: system-ui, sans-serif; }
+    table { border-collapse: collapse; margin-top: 10px; }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 5px;
+      text-align: center;
+      font-size: 12px;
+      position: relative;
+      min-width: 60px;
+      height: 25px;
+    }
+    thead, tr td:first-child { background: #eee; font-weight: bold; }
+    span, input {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    input { border: none; outline: none; text-align: center; display: none; }
+  </style>
 </head>
 <body>
-    <img src="https://imgs.search.brave.com/Vnfvrzbp4pv9IjAcoM4selFpzkttBCbInakUYV3rRc8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy83/LzczL01pY3Jvc29m/dF9FeGNlbF8yMDEz/LTIwMTlfbG9nby5z/dmc" alt="Logo de Excel">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/7/73/Microsoft_Excel_2013-2019_logo.svg" alt="Logo Excel" width="40">
 
-    <table>
-        <thead></thead>
-        <tbody></tbody>
-    </table>
+  <table>
+    <thead></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const ROWS = 10
+    const COLUMNS = 5
+    const FIRST_CHAR_CODE = 65
+
+    const range = n => Array.from({ length: n }, (_, i) => i)
+    const getColumn = i => String.fromCharCode(FIRST_CHAR_CODE + i)
+
+    let STATE = range(COLUMNS).map(col =>
+      range(ROWS).map(row => ({
+        value: "",
+        computedValue: `${getColumn(col)}${row + 1}`
+      }))
+    )
+
+    const $thead = document.querySelector("thead")
+    const $tbody = document.querySelector("tbody")
+
+    const render = () => {
+      $thead.innerHTML = `
+        <tr>
+          <th></th>
+          ${range(COLUMNS).map(i => `<th>${getColumn(i)}</th>`).join("")}
+        </tr>
+      `
+      $tbody.innerHTML = range(ROWS).map(row => `
+        <tr>
+          <td>${row + 1}</td>
+          ${range(COLUMNS).map(col => `
+            <td data-x="${col}" data-y="${row}">
+              <span>${STATE[col][row].value || ""}</span>
+              <input type="text" value="${STATE[col][row].value}">
+            </td>
+          `).join("")}
+        </tr>
+      `).join("")
+    }
+
+    $tbody.addEventListener("click", e => {
+      const td = e.target.closest("td[data-x]")
+      if (!td) return
+      const { x, y } = td.dataset
+      const input = td.querySelector("input")
+      const span = td.querySelector("span")
+
+      span.style.display = "none"
+      input.style.display = "flex"
+      input.focus()
+      input.setSelectionRange(input.value.length, input.value.length)
+
+      input.addEventListener("blur", e => {
+        STATE[x][y].value = e.target.value
+        span.textContent = e.target.value
+        span.style.display = "flex"
+        input.style.display = "none"
+      }, { once: true })
+    })
+
+    render()
+  </script>
 </body>
 </html>
