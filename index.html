@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>excel-clone</title>
   <style>
-    body { font-family: system-ui, sans-serif; }
-    table { border-collapse: collapse; margin-top: 10px; }
-    th, td {
+    *,*::after,*::before {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body { font-family: "Calibri", Candara, "Segoe UI", Optima, sans-serif; }
+
+    table {
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th,
+    td {
       border: 1px solid #ccc;
       padding: 5px;
       text-align: center;
@@ -16,19 +29,64 @@
       min-width: 60px;
       height: 25px;
     }
-    thead, tr td:first-child { background: #eee; font-weight: bold; }
-    span, input {
+
+    thead,
+    tr td:first-child {
+      background: #eee;
+      font-weight: bold;
+    }
+
+    span,
+    input {
       position: absolute;
       inset: 0;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-    input { border: none; outline: none; text-align: center; display: none; }
+
+    input {
+      border: none;
+      outline: none;
+      text-align: center;
+      display: none;
+    }
+    /* Buttons */
+    .toolbar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .toolbar button {
+      background-color: #ebebeb;
+      border: none;
+      padding: 4px 10px;
+      /* font-size: 12px; */
+      /* font-weight: 500; */
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .toolbar button:hover {
+      background-color: #cecece;
+      border-color: #666;
+    }
   </style>
 </head>
+
 <body>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/7/73/Microsoft_Excel_2013-2019_logo.svg" alt="Logo Excel" width="40">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/7/73/Microsoft_Excel_2013-2019_logo.svg" alt="Logo Excel"
+    width="40">
+  <!-- Algunos Botones  -->
+  <div class="toolbar">
+    <button>Archivo</button>
+    <button>Editar</button>
+    <button>Ver</button>
+    <button>Insertar</button>
+    <button>Formato</button>
+    <button>Ayuda</button>
+  </div>
 
   <table>
     <thead></thead>
@@ -96,4 +154,5 @@
     render()
   </script>
 </body>
+
 </html>
